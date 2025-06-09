@@ -35,12 +35,12 @@ export class CdkLambdaCanaryStack extends Stack {
       runtime: Runtime.NODEJS_22_X,
       currentVersionOptions: {
         description: `Version deployed on ${currentTime}`,
-        // removalPolicy: RemovalPolicy.RETAIN,
+        removalPolicy: RemovalPolicy.RETAIN,
       } as VersionOptions,
     });
 
     const newVersion = myLambda.currentVersion;
-    // newVersion.applyRemovalPolicy(RemovalPolicy.RETAIN);
+    newVersion.applyRemovalPolicy(RemovalPolicy.RETAIN);
 
     const alias = new Alias(this, 'FunctionAlias', {
       aliasName: this.aliasName,
@@ -52,6 +52,21 @@ export class CdkLambdaCanaryStack extends Stack {
       deployOptions: {
         stageName: this.stageName,
       } as StageOptions,
+    });
+
+    const failureAlarm = new Alarm(this, 'FunctionFailureAlarm', {
+      metric: alias.metricErrors(),
+      threshold: 1,
+      evaluationPeriods: 1,
+      alarmDescription: 'The latest deployment errors > 0',
+      alarmName: `${this.stackName}-canary-alarm`,
+      comparisonOperator: ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+    });
+
+    new LambdaDeploymentGroup(this, 'CanaryDeployment', {
+      alias: alias,
+      deploymentConfig: LambdaDeploymentConfig.CANARY_10PERCENT_5MINUTES,
+      alarms: [failureAlarm],
     });
   }
 }
