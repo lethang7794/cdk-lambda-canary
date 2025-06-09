@@ -1,9 +1,7 @@
 {
   "app": "npx ts-node --prefer-ts-exts bin/cdk-lambda-canary.ts",
   "watch": {
-    "include": [
-      "**"
-    ],
+    "include": ["**"],
     "exclude": [
       "README.md",
       "cdk*.json",
@@ -19,10 +17,7 @@
   "context": {
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,
-    "@aws-cdk/core:target-partitions": [
-      "aws",
-      "aws-cn"
-    ],
+    "@aws-cdk/core:target-partitions": ["aws", "aws-cn"],
     "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
     "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": true,
     "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": true,
@@ -91,6 +86,21 @@
     "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": true,
     "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": true,
     "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": true,
-    "@aws-cdk/aws-s3:publicAccessBlockedByDefault": true
+    "@aws-cdk/aws-s3:publicAccessBlockedByDefault": true,
+    "prefix": "cdk-lambda-canary-stack",
+    "qa": {
+      "region": "ap-southeast-1",
+      "lambda": {
+        "name": "cdk-lambda-canary-function-qa",
+        "alias": "live",
+        "stage": "qa"
+      },
+      "tags": {
+        "App": "cdk-lambda-canary",
+        "Environment": "QA",
+        "IaC": "CDK"
+      }
+    },
+    "prod": {}
   }
 }
