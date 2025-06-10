@@ -95,6 +95,14 @@
         "alias": "live",
         "stage": "qa"
       },
+      "repository": {
+        "owner": "lethang7794",
+        "repo": "cdk-lambda-canary",
+        "branch": "feature/pipeline"
+      },
+      "pipeline": {
+        "name": "cdk-lambda-canary-pipeline"
+      },
       "tags": {
         "App": "cdk-lambda-canary",
         "Environment": "QA",
