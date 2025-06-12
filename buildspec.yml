@@ -1,0 +1,15 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm install -g aws-cdk
+      - npm ci
+      - npm run build
+  pre_build:
+    commands:
+      - ACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
+  build:
+    commands:
+      - cdk deploy -c account=$ACCOUNT -c environmentType=qa --require-approval never
